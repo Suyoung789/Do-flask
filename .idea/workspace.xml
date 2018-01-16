@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="db562566-2a1f-4508-90e0-841b095b2c70" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/minitwit/flask_withas.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test_render_templates.py" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/18.01.11.md" afterPath="$PROJECT_DIR$/18.01.11.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/minitwit/minitwit.py" afterPath="$PROJECT_DIR$/minitwit/minitwit.py" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/minitwit/18.1.15.md" afterPath="" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -19,8 +16,8 @@
       <file leaf-file-name="minitwit.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/minitwit/minitwit.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="485">
-              <caret line="39" column="19" lean-forward="true" selection-start-line="35" selection-start-column="0" selection-end-line="39" selection-end-column="19" />
+            <state relative-caret-position="371">
+              <caret line="33" column="50" lean-forward="true" selection-start-line="33" selection-start-column="3" selection-end-line="33" selection-end-column="50" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
               </folding>
@@ -290,8 +287,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/minitwit/minitwit.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="485">
-          <caret line="39" column="19" lean-forward="true" selection-start-line="35" selection-start-column="0" selection-end-line="39" selection-end-column="19" />
+        <state relative-caret-position="371">
+          <caret line="33" column="50" lean-forward="true" selection-start-line="33" selection-start-column="3" selection-end-line="33" selection-end-column="50" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
           </folding>

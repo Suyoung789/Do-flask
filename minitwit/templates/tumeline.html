@@ -1,0 +1,10 @@
+<ul class=messages>
+    {% for message in messages %}
+      <li><img src="{{ message.email|gravatar(size=48) }}"><p>
+          <strong><a href="{{ url_for('user_timeline', username=message.username)}}">{{ messate.username }}</a></strong>
+          {{ message.text }}
+          <small>&mdash; {{ message.pub_datetimeformat }}</small>
+    {% else %}
+      <li><em>There's no message so far.</em>
+    {% endfor %}
+    </ul>

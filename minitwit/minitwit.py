@@ -69,3 +69,52 @@ def register:
             return  redirect(url_for('login'))
         return render_template('register.html', error = error)
 
+@app.route('/login', methods = ['GET','POST'])
+def login():
+    if g.user:
+      return redirect(url_for('timeline'))
+    error = None
+    if request.method == 'POST':
+        user = query_db('''select * from user where username = ?''', [request.form['username']], one=True)
+        if user is None:
+            error = 'Invaild username'
+        elif not check_password_hash(user['pw_hash'],request.form['password']):
+            error= 'Invaild password'
+        else:
+            flash('You were logged in')
+            session['user_id'] = user['user_id']
+            return redirect(url_for('timeline'))
+    return render_template('login.html', error = None)
+
+@app.route('/logout')
+def logout():
+    flash('You were logged out')
+    session.pop('user_id', None)
+    return  redirect(url_for('Public_timeline'))
+
+@app.route('/add_message', methods = ['POST'])
+def add_messager():
+    if 'user_id' not in session:
+        abort(401)
+    if request.form['text']:
+        g.db.execute('''insert into message (author_id, text, pub_date) values (?,?,?)''', (session['user_id'],request.form['text'],int(time.time())))
+        g.db.commit()
+        flash('Your message was recorded')
+    return redirect(url_for('timeline'))
+
+def gravatar_url():
+    return 'http://www.gravatar.com/avatar/%s?d=identicon&s=%d' % (md5(email.strip().lower().encode('utf-8')).hexdigest(),size)
+
+app.jinja_env.filters['gravatar'] = gravatar_url
+
+@app.route('<username>/follow')
+def follow_user(username):
+    if not g.user:
+        abort(401)
+    whom_id = get_user_id(username)
+    if whom_id is None:
+        abort(404)
+    g.db.execute('insert into follower (who_id, whom_id values(?,?)', [session['user_id'], whom_id])
+    g.gb.commit()
+    flash('You are now following "%s"', %username)
+    return redirect(url_for('user_timeline', username=username))

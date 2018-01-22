@@ -114,7 +114,7 @@ def follow_user(username):
     whom_id = get_user_id(username)
     if whom_id is None:
         abort(404)
-    g.db.execute('insert into follower (who_id, whom_id values(?,?)', [session['user_id'], whom_id])
+    g.db.execute('insert into follower (who_id, whom_id) values(?,?)', [session['user_id'], whom_id])
     g.gb.commit()
     flash('You are now following "%s"', %username)
     return redirect(url_for('user_timeline', username=username))

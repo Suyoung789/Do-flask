@@ -1,6 +1,6 @@
+from __future__ import  with_statement
 from flask import Flask, session, g, request, url_for, redirect, render_template, abort, flash
 from sqlite3 import dbapi2 as sqlite3
-from __future__ import  with_statement
 import time
 from hashlib import md5
 from datetime import datetime
@@ -46,7 +46,7 @@ def init_db():
         db.commit()
 
 @app.route('/register', methods=['GET', 'POST'])
-def register:
+def register():
     if g.user:
         return redirect(url_for('timeline'))
     error = None
@@ -107,7 +107,7 @@ def gravatar_url():
 
 app.jinja_env.filters['gravatar'] = gravatar_url
 
-@app.route('<username>/follow')
+@app.route('/<username>/follow')
 def follow_user(username):
     if not g.user:
         abort(401)
@@ -116,5 +116,43 @@ def follow_user(username):
         abort(404)
     g.db.execute('insert into follower (who_id, whom_id) values(?,?)', [session['user_id'], whom_id])
     g.gb.commit()
-    flash('You are now following "%s"', %username)
+    flash('You are now following "%s"' % username)
     return redirect(url_for('user_timeline', username=username))
+
+@app.route('/<username>/unfollow')
+def unfollow_user(usernmae):
+    if not g.user:
+        abort(401)
+    whom_id = get_user_id(username)
+    if whom_id is None:
+        abort(404)
+    g.db.execute('delete from follower where who_id=? and whom_id = ?', [session['user_id'],whom_id])
+    g.db.commit()
+    flash('You are no loger follow "%s"' % username)
+    return redirect(url_for('user_timeline', username = username))
+
+@app.route('/public')
+def public_timeline():
+    return render_template('timeline.html', messages=query_db(
+        '''select message.*, user.* from message, user where message.author_id = user.user_id order by message.pub_date desc limit ?''',
+        [PER_PAGE]))
+
+@app.route('/')
+def timeline():
+    if not g.user:
+        return redirect(url_for('public_timeline'))
+    return render_template('timeline.html',messages = query_db('''
+    select message.*, user.* from message, user where message.author_id = user.user_id and (user.user_i = ? or user.user_id in 
+    (select whom_id from follower where who_id = ?)) order by message.pub_date desc limit ?''', [session['user_id'], session['user_id'], PER_PAGE]))
+
+@app.route('/<username>')
+def user_timeline(username):
+    profile_user = query_db('select * from user where username = ?', [username], one = True)
+    if profile_user is None:
+        abort(404)
+    followed = False
+    if g.user:
+        followed = query_db('''select 1 from follower where follower.who_id = ? and follower.whom_id = ?''', [session['user_id'], profile_user['user_id']],
+                            one=True) is not None
+    return render_template('timeline.html', messages = query_db('''select mesage.*, user.* from message, user where user.user_id = message.author_id and user.user_id = ?
+    order by message.pub_date desc limit ?''', [profile_user['user_id'], PER_PAGE]), followed=followed, profile_user=profile_user)

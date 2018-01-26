@@ -156,3 +156,13 @@ def user_timeline(username):
                             one=True) is not None
     return render_template('timeline.html', messages = query_db('''select mesage.*, user.* from message, user where user.user_id = message.author_id and user.user_id = ?
     order by message.pub_date desc limit ?''', [profile_user['user_id'], PER_PAGE]), followed=followed, profile_user=profile_user)
+
+def get_user_id(username):
+    rv = g.db.execute('select user_id from user where username =?', [username]).fetchone
+    return rv[0] if rv else None
+
+def format_datetime(timestamp):
+    return datetime.utcfromtimestamp(timestamp).strftime('%y-%m-%d @ %H:%M') 
+
+if __name__ == '__main__':
+    app.run()
